@@ -1,0 +1,140 @@
+NAME: ANSHUL AHER 
+BATCH: P 
+ROLL NO: 10 
+PRN NO: F21113010 
+ASSIGNMENT NO: A-06
+ASSIGNMENT TITLE: Named PL/SQL Block: PL/SQL Stored Procedure and Stored 
+Function. 
+-------------------------------------------------------------------------
+-------------------------------------------------------------------------
+------------------------------------------ 
+SQL*Plus: Release 19.0.0.0.0 - Production on Wed Nov 1 07:04:36 2023 
+Version 19.3.0.0.0 
+Copyright (c) 1982, 2019, Oracle. All rights reserved. 
+Enter user-name: sys as sysdba 
+Enter password: 
+Connected to: 
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production 
+Version 19.3.0.0.0 
+SQL> create table Stud_Marks(roll_no number,name varchar(20),total_marks 
+number); 
+Table created. 
+SQL> create table Result(roll_no int primary key,name varchar(20),Class 
+varchar(20)); 
+Table created. 
+SQL> insert into Stud_Marks values (1,'Anshul',1400); 
+1 row created. 
+SQL> insert into Stud_Marks values (2,'Azhar',1000); 
+1 row created. 
+SQL> insert into Stud_Marks values (3,'Amaan',850); 
+1 row created. 
+SQL> insert into Stud_Marks values (4,'Ishaan',969); 
+1 row created. 
+SQL> insert into Stud_Marks values (5,'Aditya',888); 
+1 row created. 
+SQL> insert into Stud_Marks values (6,'Atharva',1100); 
+1 row created. 
+SQL> insert into Stud_Marks values (7,'Yash',845); 
+1 row created. 
+SQL> insert into Stud_Marks values (8,'Abhi',600); 
+1 row created. 
+SQL> select * from Stud_Marks; 
+ ROLL_NO NAME TOTAL_MARKS 
+---------- -------------------- ----------- 
+ 1 Anshul 1400 
+ 2 Azhar 1000 
+ 3 Amaan 850 
+ 4 Ishaan 969 
+ 5 Aditya 888 
+ 6 Atharva 1100 
+ 7 Yash 845 
+ 8 Abhi 600 
+8 rows selected. 
+SQL> create or replace PROCEDURE proc_grade 
+ 2 (var_rollno IN number, p_rollno out Stud_Marks.roll_no%type, p_name 
+out Stud_Marks.name%type, p_totalmarks out Stud_Marks.total_marks%type) 
+AS
+ 3 BEGIN 
+ 4 SELECT roll_no,name,total_marks into p_rollno,p_name,p_totalmarks 
+FROM Stud_Marks where roll_no=var_rollno; 
+ 5 IF p_totalmarks <=1500 AND p_totalmarks >=990 THEN 
+ 6 INSERT INTO Result VALUES (p_rollno,p_name,'Distinction'); 
+ 7 ELSE IF p_totalmarks <=989 AND p_totalmarks >=900 THEN 
+ 8 INSERT INTO Result VALUES (p_rollno,p_name,'First Class'); 
+ 9 ELSE IF p_totalmarks <=899 AND p_totalmarks >=825 THEN 
+ 10 INSERT INTO Result VALUES (p_rollno,p_name,'Higher Second Class'); 
+ 11 ELSE 
+ 12 INSERT INTO Result VALUES (p_rollno,p_name,'Fail'); 
+ 13 END IF; 
+ 14 END IF; 
+ 15 END IF; 
+ 16 EXCEPTION 
+ 17 WHEN no_data_found then 
+ 18 dbms_output.put_line('Roll no'||var_rollno||'not found'); 
+ 19 END; 
+ 20 / 
+Procedure created. 
+SQL> declare 
+ 2 var_roll number; 
+ 3 p_rollno Stud_Marks.roll_no%type; 
+ 4 p_name Stud_Marks.name%type; 
+ 5 p_totalmarks Stud_Marks.total_marks%type; 
+ 6 Begin 
+ 7 var_roll:=&var_roll; 
+ 8 proc_grade(var_roll,p_rollno, p_name, p_totalmarks ); 
+ 9 end; 
+ 10 / 
+Enter value for var_roll: 1 
+old 7: var_roll:=&var_roll; 
+new 7: var_roll:=1; 
+PL/SQL procedure successfully completed. 
+SQL> declare 
+ 2 var_roll number; 
+ 3 p_rollno Stud_Marks.roll_no%type; 
+ 4 p_name Stud_Marks.name%type; 
+ 5 p_totalmarks Stud_Marks.total_marks%type; 
+ 6 Begin 
+ 7 var_roll:=&var_roll; 
+ 8 proc_grade(var_roll,p_rollno, p_name, p_totalmarks ); 
+ 9 end; 
+ 10 / 
+Enter value for var_roll: 4 
+old 7: var_roll:=&var_roll; 
+new 7: var_roll:=4; 
+PL/SQL procedure successfully completed. 
+SQL> declare 
+ 2 var_roll number; 
+ 3 p_rollno Stud_Marks.roll_no%type; 
+ 4 p_name Stud_Marks.name%type; 
+ 5 p_totalmarks Stud_Marks.total_marks%type; 
+ 6 Begin 
+ 7 var_roll:=&var_roll; 
+ 8 proc_grade(var_roll,p_rollno, p_name, p_totalmarks ); 
+ 9 end; 
+ 10 / 
+Enter value for var_roll: 3 
+old 7: var_roll:=&var_roll; 
+new 7: var_roll:=3; 
+PL/SQL procedure successfully completed. 
+SQL> declare 
+ 2 var_roll number; 
+ 3 p_rollno Stud_Marks.roll_no%type; 
+ 4 p_name Stud_Marks.name%type; 
+ 5 p_totalmarks Stud_Marks.total_marks%type; 
+ 6 Begin 
+ 7 var_roll:=&var_roll; 
+ 8 proc_grade(var_roll,p_rollno, p_name, p_totalmarks ); 
+ 9 end; 
+ 10 / 
+Enter value for var_roll: 8 
+old 7: var_roll:=&var_roll; 
+new 7: var_roll:=8; 
+PL/SQL procedure successfully completed. 
+SQL> select * from Result; 
+ ROLL_NO NAME CLASS 
+---------- -------------------- -------------------- 
+ 1 Anshul Distinction 
+ 4 Ishaan First Class 
+ 3 Amaan Higher Second Class 
+ 8 Abhi Fail 
+SQL> 

@@ -1,0 +1,132 @@
+NAME: ANSHUL AHER 
+BATCH: P 
+ROLL NO: 10 
+PRN NO: F21113010 
+ASSIGNMENT NO: A-07
+ASSIGNMENT TITLE: Cursors:(All types: Implicit, Explicit, Cursor FOR 
+Loop, Parameterized Cursor) 
+-------------------------------------------------------------------------
+-------------------------------------------------------------------------
+- 
+SQL*Plus: Release 19.0.0.0.0 - Production on Wed Nov 1 10:30:18 2023 
+Version 19.3.0.0.0 
+Copyright (c) 1982, 2019, Oracle. All rights reserved. 
+Enter user-name: sys as sysdba
+Enter password: 
+Connected to: 
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production 
+Version 19.3.0.0.0 
+SQL> create table N_RollCall(roll int,name varchar2(10)); 
+Table created. 
+SQL> create table O_RollCall(roll int,name varchar2(10)); 
+Table created. 
+SQL> insert into O_RollCall values (1,'JOHN'); 
+1 row created. 
+SQL> insert into O_RollCall values (2,'HENRY'); 
+1 row created. 
+SQL> insert into N_RollCall values (3,'ZEUS'); 
+1 row created. 
+SQL> insert into O_RollCall values (4, 'JORDAN'); 
+1 row created. 
+SQL> insert into N_RollCall Values (2,'HENRY'); 
+1 row created. 
+SQL> select * from O_RollCall; 
+ ROLL NAME 
+---------- ---------- 
+ 1 JOHN 
+ 2 HENRY 
+ 4 JORDAN 
+SQL> select * from N_RollCall; 
+ ROLL NAME 
+---------- ---------- 
+ 3 ZEUS 
+ 2 HENRY 
+SQL> DECLARE 
+ 2 roll_no int; 
+ 3 flag INT(2); 
+ 4 CURSOR c_roll(roll_no int) IS select * from O_RollCall where roll 
+not in (select roll from N_RollCall where N_RollCall.roll = 
+O_RollCall.roll); 
+ 5 INFO N_RollCall%rowtype; 
+ 6 BEGIN 
+ 7 roll_no := &roll_no; 
+ 8 flag := 0; 
+ 9 OPEN c_roll(roll_no); 
+ 10 LOOP 
+ 11 fetch c_roll into INFO; 
+ 12 exit when c_roll%notfound; 
+ 13 IF (INFO.roll = roll_no) THEN insert into N_RollCall values 
+(INFO.roll,INFO.name); 
+ 14 flag := 1; 
+ 15 END IF; 
+ 16 END LOOP; 
+17
+ 18 IF (c_roll%rowcount = 0 or flag = 0) THEN 
+ 19 DBMS_OUTPUT.PUT_LINE('This Record already present in N_RollCall'); 
+ 20 ELSE
+ 21 DBMS_OUTPUT.PUT_LINE('RECORD UPDATED Successfully in 
+N_RollCall...'); 
+ 22 END IF; 
+ 23 CLOSE c_roll; 
+ 24 END; 
+ 25 / 
+Enter value for roll_no: 2 
+old 7: roll_no := &roll_no; 
+new 7: roll_no := 2; 
+PL/SQL procedure successfully completed.
+SQL> select * from O_RollCall; 
+ ROLL NAME 
+---------- ---------- 
+ 1 JOHN 
+ 2 HENRY 
+ 4 JORDAN 
+SQL> select * from N_RollCall; 
+ ROLL NAME 
+---------- ---------- 
+ 3 ZEUS 
+ 2 HENRY 
+SQL> DECLARE 
+ 2 roll_no int; 
+ 3 flag INT(2); 
+ 4 CURSOR c_roll(roll_no int) IS select * from O_RollCall where roll 
+not in (select roll from N_RollCall where N_RollCall.roll = 
+O_RollCall.roll); 
+ 5 INFO N_RollCall%rowtype; 
+ 6 BEGIN 
+ 7 roll_no := &roll_no; 
+ 8 flag := 0; 
+ 9 OPEN c_roll(roll_no); 
+ 10 LOOP 
+ 11 fetch c_roll into INFO; 
+ 12 exit when c_roll%notfound; 
+ 13 IF (INFO.roll = roll_no) THEN insert into N_RollCall values 
+(INFO.roll,INFO.name); 
+ 14 flag := 1; 
+ 15 END IF; 
+ 16 END LOOP; 
+17
+ 18 IF (c_roll%rowcount = 0 or flag = 0) THEN 
+ 19 DBMS_OUTPUT.PUT_LINE('This Record already present in N_RollCall'); 
+ 20 ELSE 
+ 21 DBMS_OUTPUT.PUT_LINE('RECORD UPDATED Successfully in 
+N_RollCall...'); 
+ 22 END IF; 
+ 23 CLOSE c_roll; 
+24 END; 
+ 25 / 
+Enter value for roll_no: 4 
+old 7: roll_no := &roll_no; 
+new 7: roll_no := 4; 
+PL/SQL procedure successfully completed. 
+SQL> select * from O_RollCall; 
+ ROLL NAME 
+---------- ---------- 
+ 1 JOHN 
+ 2 HENRY 
+ 4 JORDAN 
+SQL> select * from N_RollCall; 
+ ROLL NAME 
+---------- ---------- 
+ 3 ZEUS 
+ 2 HENRY 
+ 4 JORDAN 

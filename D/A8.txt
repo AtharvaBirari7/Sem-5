@@ -1,0 +1,114 @@
+NAME : ANSHUL AHER 
+BATCH : P 
+ROLL NO : 10 
+PRN : F21113010 
+ASSIGNMENT NO : A8 
+ASSIGNMENT TITLE : Database Trigger (All Types: Row level and Statement 
+level triggers, Before and After Triggers). 
+-------------------------------------------------------------------------
+-------------------------------------------------------------------------
+--
+SQL*Plus: Release 19.0.0.0.0 - Production on Thu Nov 2 21:19:42 2023 
+Version 19.3.0.0.0 
+Copyright (c) 1982, 2019, Oracle. All rights reserved. 
+Enter user-name: sys as sysdba 
+Enter password: 
+Connected to: 
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production 
+Version 19.3.0.0.0 
+SQL> create table library_table (roll_no int ,name varchar(50), 
+date_of_issue date ,name_of_book varchar(50) ,status varchar(10)); 
+Table created. 
+SQL> create table audit_table (roll_no int ,name varchar(50), 
+date_of_issue date ,name_of_book varchar(50) ,status varchar(10), 
+operation varchar(10)); 
+Table created. 
+SQL> insert into library_table values (1 , 'JOHN' , '22-jul-2023' , 
+'DBMS' , 'Issued'); 
+1 row created. 
+SQL> insert into library_table values (2 , 'ZEUS' , '19-aug-2023' , 'IOT' 
+, 'Issued'); 
+1 row created. 
+SQL> insert into library_table values (3 , 'PETER' , '07-may-2023' , 
+'TOC' , 'Issued'); 
+1 row created. 
+SQL> insert into library_table values (4 , 'ROBERT' , '19-mar-2023' , 
+'SPOS' , 'Issued'); 
+1 row created. 
+SQL> insert into library_table values (5 , 'BEN' , '01-feb-2023' , 'CNS' 
+, 'Issued'); 
+1 row created. 
+SQL> select *from library_table; 
+ ROLL_NO NAME DATE_OF_I 
+---------- -------------------------------------------------- --------- 
+NAME_OF_BOOK STATUS 
+-------------------------------------------------- ---------- 
+ 1 JOHN 22-JUL-23
+DBMS Issued 
+ 2 ZEUS 19-AUG-23
+IOT Issued 
+ 3 PETER 07-MAY-23
+TOC Issued 
+ ROLL_NO NAME DATE_OF_I 
+---------- -------------------------------------------------- --------- 
+NAME_OF_BOOK STATUS 
+-------------------------------------------------- ---------- 
+ 4 ROBERT 19-MAR-23
+SPOS Issued 
+ 5 BEN 01-FEB-23
+CNS Issued 
+SQL> CREATE OR REPLACE TRIGGER after_row_level 
+2 AFTER UPDATE OR DELETE 
+3 ON library_table 
+4 FOR EACH ROW 
+5 BEGIN 
+6 IF updating THEN 
+7 INSERT INTO audit_table VALUES(:old.roll_no, :old.name, 
+:old.date_of_issue, :old.name_of_book, :old.status, 'update'); 
+8 ELSIF deleting THEN 
+9 INSERT INTO audit_table VALUES(:old.roll_no, :old.name, 
+:old.date_of_issue, :old.name_of_book, :old.status, 'delete'); 
+10 END IF; 
+11 END; 
+12 / 
+Trigger created. 
+SQL> update library_table set name_of_book='DBMS' where roll_no=4; 
+1 row updated. 
+SQL> select * from library_table; 
+ ROLL_NO NAME DATE_OF_I 
+---------- -------------------------------------------------- --------- 
+NAME_OF_BOOK STATUS 
+-------------------------------------------------- ---------- 
+ 1 JOHN 22-JUL-23
+DBMS Issued 
+ 2 ZEUS 19-AUG-23
+IOT Issued 
+ 3 PETER 07-MAY-23
+TOC Issued 
+ ROLL_NO NAME DATE_OF_I 
+---------- -------------------------------------------------- --------- 
+NAME_OF_BOOK STATUS 
+-------------------------------------------------- ---------- 
+ 4 ROBERT 19-MAR-23
+DBMS Issued 
+ 5 BEN 01-FEB-23
+CNS Issued 
+SQL> delete from library_table where roll_no=4; 
+1 row deleted. 
+SQL> select * from library_table; 
+ ROLL_NO NAME DATE_OF_I 
+---------- -------------------------------------------------- --------- 
+NAME_OF_BOOK STATUS 
+-------------------------------------------------- ---------- 
+ 1 JOHN 22-JUL-23
+DBMS Issued 
+ 2 ZEUS 19-AUG-23
+IOT Issued 
+ 3 PETER 07-MAY-23
+TOC Issued 
+ ROLL_NO NAME DATE_OF_I 
+---------- -------------------------------------------------- --------- 
+NAME_OF_BOOK STATUS 
+-------------------------------------------------- ---------- 
+ 5 BEN 01-FEB-23
+CNS Issued 

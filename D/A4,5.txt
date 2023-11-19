@@ -1,0 +1,257 @@
+NAME: ANSHUL AHER 
+BATCH: P 
+ROLL NO: 10 
+PRN NO: F21113010 
+ASSIGNMENT NO: A-04,05 
+ASSIGNMENT TITLE: Unnamed PL/SQLcode block: Use of Control structure and Exception handling is 
+mandatory. 
+ 
+------------------------------------------------------------------------------------------------------------------------------------------- 
+ 
+SQL*Plus: Release 19.0.0.0.0 - Production on Wed Nov 1 20:06:52 2023 
+Version 19.3.0.0.0 
+ 
+Copyright (c) 1982, 2019, Oracle. All rights reserved. 
+ 
+Enter user-name: sys as sysdba 
+Enter password: 
+ 
+Connected to: 
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production 
+Version 19.3.0.0.0 
+ 
+SQL> CREATE TABLE borrower(roll_no NUMBER , name VARCHAR2(25), dateofissue DATE,name_of
+_book VARCHAR2(25), status VARCHAR2(20)); 
+ 
+Table created. 
+ 
+SQL> CREATE TABLE fine(roll_no NUMBER,date_of_return DATE,amt NUMBER); 
+ 
+Table created. 
+ 
+SQL> INSERT INTO borrower VALUES(10,’PRANESH’,TO_DATE(’11-08-2022’,’DD-MM-YYYY’),’HARR
+Y POTTER’,’I’); 
+ 
+1 row created. 
+ 
+SQL> INSERT INTO borrower VALUES(12,’ROHAN’,TO_DATE(’1-07-2022’,’DD-MM-YYYY’),’YOUR FAU
+LT’,’I’) 
+2 ; 
+ 
+1 row created. 
+ 
+SQL> INSERT INTO borrower VALUES(13,’CHARLIE’,TO_DATE(’26-09-2022’,’DD-MM-YYYY’),’GOD O
+F WAR’,’I’); 
+ 
+1 row created. 
+ 
+SQL> INSERT INTO borrower VALUES(14,’ASHUTOSH’,TO_DATE(’10-07-2022’,’DD-MM-YYYY’),’SPID
+ER-MAN’,’I’); 
+ 
+1 row created. 
+ 
+SQL> INSERT INTO borrower VALUES(11,’BRAVO’,TO_DATE(’19-08-2022’,’DD-MM-YYYY’),’MY FAUL
+T’,’I’); 
+ 
+1 row created. 
+ 
+SQL> select * from borrower; 
+ 
+ROLL_NO NAME DATEOFISS NAME_OF_BOOK 
+---------- ------------------------- --------- ------------------------- 
+STATUS 
+-------------------- 
+10 PRANESH 11-AUG-22 HARRY POTTER 
+I 
+ 
+12 ROHAN 01-JUL-22 YOUR FAULT 
+I 
+ 
+13 CHARLIE 26-SEP-22 GOD OF WAR 
+I 
+ 
+ 
+ROLL_NO NAME DATEOFISS NAME_OF_BOOK 
+---------- ------------------------- --------- ------------------------- 
+STATUS 
+-------------------- 
+14 ASHUTOSH 10-JUL-22 SPIDER-MAN 
+I 
+ 
+11 BRAVO 19-AUG-22 MY FAULT 
+I 
+ 
+SQL> DECLARE 
+2 i_roll_no NUMBER; 
+3 name_of_book VARCHAR2(25); 
+4 no_of_days NUMBER; 
+5 return_date DATE := TO_DATE(SYSDATE,’DD-MM-YYYY’); 
+6 temp NUMBER; 
+7 doi DATE; 
+8 fine NUMBER; 
+9 BEGIN 
+10 i_roll_no := 10; 
+11 name_of_book := ’HARRY POTTER’; 
+12 --dbms_output.put_line(return_date); 
+13 SELECT to_date(borrower.dateofissue,’DD-MM-YYYY’) INTO doi FROM borrower WHERE borrow
+er.roll_no = i_roll_no AND borrower.name_of_book = name_of_book; 
+14 no_of_days := return_date-doi; 
+15 dbms_output.put_line(no_of_days); 
+16 IF (no_of_days >15 AND no_of_days <=30) THEN 
+17 fine := 5*no_of_days; 
+18 
+19 ELSIF (no_of_days>30 ) THEN 
+20 temp := no_of_days-30; 
+21 fine := 75 + temp*50; 
+22 END IF; 
+23 dbms_output.put_line(fine); 
+24 INSERT INTO fine VALUES(i_roll_no,return_date,fine); 
+25 UPDATE borrower SET status = ’RETURNED’ WHERE borrower.roll_no = i_roll_no; 
+26 
+27 
+28 END; 
+29 / 
+ 
+PL/SQL procedure successfully completed. 
+ 
+SQL> DECLARE 
+2 i_roll_no NUMBER; 
+3 name_of_book VARCHAR2(25); 
+4 no_of_days NUMBER; 
+5 return_date DATE := TO_DATE(SYSDATE,’DD-MM-YYYY’); 
+6 temp NUMBER; 
+7 doi DATE; 
+8 fine NUMBER; 
+9 BEGIN 
+10 i_roll_no := 11; 
+11 name_of_book := ’MY FAULT’; 
+12 --dbms_output.put_line(return_date); 
+13 SELECT to_date(borrower.dateofissue,’DD-MM-YYYY’) INTO doi FROM borrower WHERE borrow
+er.roll_no = i_roll_no AND borrower.name_of_book = name_of_book; 
+14 no_of_days := return_date-doi; 
+15 dbms_output.put_line(no_of_days); 
+16 IF (no_of_days >15 AND no_of_days <=30) THEN 
+17 fine := 5*no_of_days; 
+18 
+19 ELSIF (no_of_days>30 ) THEN 
+20 temp := no_of_days-30; 
+21 fine := 75 + temp*50; 
+22 END IF; 
+23 dbms_output.put_line(fine); 
+24 INSERT INTO fine VALUES(i_roll_no,return_date,fine); 
+25 UPDATE borrower SET status = ’RETURNED’ WHERE borrower.roll_no = i_roll_no; 
+26 
+27 
+28 END; 
+29 / 
+ 
+PL/SQL procedure successfully completed. 
+ 
+SQL> DECLARE 
+2 i_roll_no NUMBER; 
+3 name_of_book VARCHAR2(25); 
+4 no_of_days NUMBER; 
+5 return_date DATE := TO_DATE(SYSDATE,’DD-MM-YYYY’); 
+6 temp NUMBER; 
+7 doi DATE; 
+8 fine NUMBER; 
+9 BEGIN 
+10 i_roll_no := 12; 
+11 name_of_book := ’YOUR FAULT’; 
+12 --dbms_output.put_line(return_date); 
+13 SELECT to_date(borrower.dateofissue,’DD-MM-YYYY’) INTO doi FROM borrower WHERE borrow
+er.roll_no = i_roll_no AND borrower.name_of_book = name_of_book; 
+14 no_of_days := return_date-doi; 
+15 dbms_output.put_line(no_of_days); 
+16 IF (no_of_days >15 AND no_of_days <=30) THEN 
+17 fine := 5*no_of_days; 
+18 
+19 ELSIF (no_of_days>30 ) THEN 
+20 temp := no_of_days-30; 
+21 fine := 75 + temp*50; 
+22 END IF; 
+23 dbms_output.put_line(fine); 
+24 INSERT INTO fine VALUES(i_roll_no,return_date,fine); 
+25 UPDATE borrower SET status = ’RETURNED’ WHERE borrower.roll_no = i_roll_no; 
+26 
+27 
+28 END; 
+29 / 
+ 
+PL/SQL procedure successfully completed. 
+ 
+SQL> DECLARE 
+2 i_roll_no NUMBER; 
+3 name_of_book VARCHAR2(25); 
+4 no_of_days NUMBER; 
+5 return_date DATE := TO_DATE(SYSDATE,’DD-MM-YYYY’); 
+6 temp NUMBER; 
+7 doi DATE; 
+8 fine NUMBER; 
+9 BEGIN 
+10 i_roll_no := 13; 
+11 name_of_book := ’GOD OF WAR’; 
+12 --dbms_output.put_line(return_date); 
+13 SELECT to_date(borrower.dateofissue,’DD-MM-YYYY’) INTO doi FROM borrower WHERE borrow
+er.roll_no = i_roll_no AND borrower.name_of_book = name_of_book; 
+14 no_of_days := return_date-doi; 
+15 dbms_output.put_line(no_of_days); 
+16 IF (no_of_days >15 AND no_of_days <=30) THEN 
+17 fine := 5*no_of_days; 
+18 
+19 ELSIF (no_of_days>30 ) THEN 
+20 temp := no_of_days-30; 
+21 fine := 75 + temp*50; 
+22 END IF; 
+23 dbms_output.put_line(fine); 
+24 INSERT INTO fine VALUES(i_roll_no,return_date,fine); 
+25 UPDATE borrower SET status = ’RETURNED’ WHERE borrower.roll_no = i_roll_no; 
+26 
+27 
+28 END; 
+29 / 
+ 
+PL/SQL procedure successfully completed. 
+ 
+SQL> DECLARE 
+2 i_roll_no NUMBER; 
+3 name_of_book VARCHAR2(25); 
+4 no_of_days NUMBER; 
+5 return_date DATE := TO_DATE(SYSDATE,’DD-MM-YYYY’); 
+6 temp NUMBER; 
+7 doi DATE; 
+8 fine NUMBER; 
+9 BEGIN 
+10 i_roll_no := 14; 
+11 name_of_book := ’SPIDER-MAN’; 
+12 --dbms_output.put_line(return_date); 
+13 SELECT to_date(borrower.dateofissue,’DD-MM-YYYY’) INTO doi FROM borrower WHERE borrow
+er.roll_no = i_roll_no AND borrower.name_of_book = name_of_book; 
+14 no_of_days := return_date-doi; 
+15 dbms_output.put_line(no_of_days); 
+16 IF (no_of_days >15 AND no_of_days <=30) THEN 
+17 fine := 5*no_of_days; 
+18 
+19 ELSIF (no_of_days>30 ) THEN 
+20 temp := no_of_days-30; 
+21 fine := 75 + temp*50; 
+22 END IF; 
+23 dbms_output.put_line(fine); 
+24 INSERT INTO fine VALUES(i_roll_no,return_date,fine); 
+25 UPDATE borrower SET status = ’RETURNED’ WHERE borrower.roll_no = i_roll_no; 
+26 
+27 
+28 END; 
+29 / 
+ 
+PL/SQL procedure successfully completed. 
+ 
+SQL> select * from fine; 
+ 
+ROLL_NO DATE_OF_R AMT 
+---------- --------- ---------- 
+10 01-NOV-23 20925 
+11 01-NOV-23 20525 
+12 01-NOV-23 22975 
+13 01-NOV-23 18625 
+14 01-NOV-23 22525 
