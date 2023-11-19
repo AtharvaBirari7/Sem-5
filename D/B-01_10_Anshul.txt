@@ -1,0 +1,479 @@
+NAME: ANSHUL AHER
+CLASS: TE COMP 3
+BATCH: P
+ROLL NO: 10
+ASSIGNMENT : B1
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+test> use Company_system
+switched to db Company_system
+
+Company_system> db.createCollection('Comapnies')
+{ ok: 1 }
+
+Company_system> show collections
+Comapnies
+
+Company_system> db.Comapnies.insertMany([{id: 1, name: "Ankush", age: 20, address: {city:"Pune", pincode: 411001} , salary: 10000, cname: "Infosys", designation: "Developer", expertise: "MySQL"}, {id: 2, name: "Ayush", age: 22, address: {city: "Mumbai", pincode: 412002}, salary: 10000, cname: "Wipro", designation: "Tester", expertise: "MongoDB"}, {id: 3,  name: "Rakesh", age:22, address: {city: "Pune", pincode: 411001}, salary: 5000, cname: "Infosys", designation: "Content Writer", expertise: "MySQL"}, {id: 4, name: "Zeus", age: 21, address: {city: "Hyderabad", pincode: 413002}, salary: 20000, cname: "TCS", designation: "Tester", expertise: "MongoDB"}, {id: 5, name: "Henry", age: 25, address: {city: "Pune", pincode: 411001}, salary: 100000, cname: "TCS", designation: "Developer", expertise: "Casandra"},{id: 6, name: "John", age: 22, address: {city: "Mumbai", pincode: 412002}, salary: 10000, cname: "Wipro", designation: "Tester", expertise: "MongoDB"},{id: 7, name: "Rohit", age: 20, address: {city: "Mumbai", pincode: 412002}, salary: 20000, cname: "Infosys", designation: "Tester", expertise: "MySQL"}, {id: 8, name: "Rohan", age: 22, address: {city: "Pune", pincode: 411011}, salary: 100000, cname: "TCS", designation: "Tester", expertise: "MongoDB"}])
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId("653a24971603bd07db58b556"),
+    '1': ObjectId("653a24971603bd07db58b557"),
+    '2': ObjectId("653a24971603bd07db58b558"),
+    '3': ObjectId("653a24971603bd07db58b559"),
+    '4': ObjectId("653a24971603bd07db58b55a"),
+    '5': ObjectId("653a24971603bd07db58b55b"),
+    '6': ObjectId("653a24971603bd07db58b55c"),
+    '7': ObjectId("653a24971603bd07db58b55d")
+  }
+}
+
+Q.1] Select all documents where the Designation field has the value "Programmer" and the value of the salary field is greater than 30000.
+Company_system> db.Comapnies.find({ designation: "Programmer", salary: { $gt: 30000 } })
+>> EMPTY SET
+
+Q.2] Creates a new document if no document in the employee collection contains {Designation: "Tester", Company_name: "TCS", Age: 25}
+Company_system> db.Comapnies.updateOne({ designation: "Tester", cname: "TCS", age: 25 }, { $set: { designation: "Tester", cname: "TCS", age: 25 } }, { upsert: true })
+{
+  acknowledged: true,
+  insertedId: ObjectId("653a27d62690b50ed20986f5"),
+  matchedCount: 0,
+  modifiedCount: 0,
+  upsertedCount: 1
+}
+
+Q.3] Selects all documents in the collection where the field age has a value less than 30 or the value of the salary field is greater than 40000.
+Company_system> db.Comapnies.find({ $or: [{ age: { $lt: 30 } }, { salary: { $gt: 40000 } }] })
+[
+  {
+    _id: ObjectId("653a24971603bd07db58b556"),
+    id: 1,
+    name: 'Ankush',
+    age: 20,
+    address: { city: 'Pune', pincode: 411001 },
+    salary: 10000,
+    cname: 'Infosys',
+    designation: 'Developer',
+    expertise: 'MySQL'
+  },
+  {
+    _id: ObjectId("653a24971603bd07db58b557"),
+    id: 2,
+    name: 'Ayush',
+    age: 22,
+    address: { city: 'Mumbai', pincode: 412002 },
+    salary: 10000,
+    cname: 'Wipro',
+    designation: 'Tester',
+    expertise: 'MongoDB'
+  },
+  {
+    _id: ObjectId("653a24971603bd07db58b558"),
+    id: 3,
+    name: 'Rakesh',
+    age: 22,
+    address: { city: 'Pune', pincode: 411001 },
+    salary: 5000,
+    cname: 'Infosys',
+    designation: 'Content Writer',
+    expertise: 'MySQL'
+  },
+  {
+    _id: ObjectId("653a24971603bd07db58b559"),
+    id: 4,
+    name: 'Zeus',
+    age: 21,
+    address: { city: 'Hyderabad', pincode: 413002 },
+    salary: 20000,
+    cname: 'TCS',
+    designation: 'Tester',
+    expertise: 'MongoDB'
+  },
+  {
+    _id: ObjectId("653a24971603bd07db58b55a"),
+    id: 5,
+    name: 'Henry',
+    age: 25,
+    address: { city: 'Pune', pincode: 411001 },
+    salary: 100000,
+    cname: 'TCS',
+    designation: 'Developer',
+    expertise: 'Casandra'
+  },
+  {
+    _id: ObjectId("653a24971603bd07db58b55b"),
+    id: 6,
+    name: 'John',
+    age: 22,
+    address: { city: 'Mumbai', pincode: 412002 },
+    salary: 10000,
+    cname: 'Wipro',
+    designation: 'Tester',
+    expertise: 'MongoDB'
+  },
+  {
+    _id: ObjectId("653a24971603bd07db58b55c"),
+    id: 7,
+    name: 'Rohit',
+    age: 20,
+    address: { city: 'Mumbai', pincode: 412002 },
+    salary: 20000,
+    cname: 'Infosys',
+    designation: 'Tester',
+    expertise: 'MySQL'
+  },
+  {
+    _id: ObjectId("653a24971603bd07db58b55d"),
+    id: 8,
+    name: 'Rohan',
+    age: 22,
+    address: { city: 'Pune', pincode: 411011 },
+    salary: 100000,
+    cname: 'TCS',
+    designation: 'Tester',
+    expertise: 'MongoDB'
+  },
+  {
+    _id: ObjectId("653a27d62690b50ed20986f5"),
+    age: 25,
+    cname: 'TCS',
+    designation: 'Tester'
+  }
+]
+
+Q.4] Matches all documents where the value of the field Address is an embedded document that contains only the field city with the value "Pune" and the field Pin_code with the value "411001".
+Company_system> db.Comapnies.find({ "address.city": "Pune", "address.pincode": 411001 })
+[
+  {
+    _id: ObjectId("653a24971603bd07db58b556"),
+    id: 1,
+    name: 'Ankush',
+    age: 20,
+    address: { city: 'Pune', pincode: 411001 },
+    salary: 10000,
+    cname: 'Infosys',
+    designation: 'Developer',
+    expertise: 'MySQL'
+  },
+  {
+    _id: ObjectId("653a24971603bd07db58b558"),
+    id: 3,
+    name: 'Rakesh',
+    age: 22,
+    address: { city: 'Pune', pincode: 411001 },
+    salary: 5000,
+    cname: 'Infosys',
+    designation: 'Content Writer',
+    expertise: 'MySQL'
+  },
+  {
+    _id: ObjectId("653a24971603bd07db58b55a"),
+    id: 5,
+    name: 'Henry',
+    age: 25,
+    address: { city: 'Pune', pincode: 411001 },
+    salary: 100000,
+    cname: 'TCS',
+    designation: 'Developer',
+    expertise: 'Casandra'
+  }
+]
+
+Q.5] Finds all documents with Company_name: "TCS" and modifies their salary field by 2000.
+Company_system> db.Comapnies.updateMany({ cname: "TCS" }, { $inc: { salary: 2000 } })
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 4,
+  modifiedCount: 4,
+  upsertedCount: 0
+}
+Company_system> db.Comapnies.find({ cname:"TCS"})
+[
+  {
+    _id: ObjectId("653a24971603bd07db58b559"),
+    id: 4,
+    name: 'Zeus',
+    age: 21,
+    address: { city: 'Hyderabad', pincode: 413002 },
+    salary: 22000,
+    cname: 'TCS',
+    designation: 'Tester',
+    expertise: 'MongoDB'
+  },
+  {
+    _id: ObjectId("653a24971603bd07db58b55a"),
+    id: 5,
+    name: 'Henry',
+    age: 25,
+    address: { city: 'Pune', pincode: 411001 },
+    salary: 102000,
+    cname: 'TCS',
+    designation: 'Developer',
+    expertise: 'Casandra'
+  },
+  {
+    _id: ObjectId("653a24971603bd07db58b55d"),
+    id: 8,
+    name: 'Rohan',
+    age: 22,
+    address: { city: 'Pune', pincode: 411011 },
+    salary: 102000,
+    cname: 'TCS',
+    designation: 'Tester',
+    expertise: 'MongoDB'
+  },
+  {
+    _id: ObjectId("653a27d62690b50ed20986f5"),
+    age: 25,
+    cname: 'TCS',
+    designation: 'Tester',
+    salary: 2000
+  }
+]
+
+Q.6] Find documents where Designation is not equal to "Developer".
+Company_system> db.Comapnies.find({ designation: { $ne: "Developer" } }, { id: 1, designation: 1, address: 1, name: 1 })
+[
+  {
+    _id: ObjectId("653a24971603bd07db58b557"),
+    id: 2,
+    name: 'Ayush',
+    address: { city: 'Mumbai', pincode: 412002 },
+    designation: 'Tester'
+  },
+  {
+    _id: ObjectId("653a24971603bd07db58b558"),
+    id: 3,
+    name: 'Rakesh',
+    address: { city: 'Pune', pincode: 411001 },
+    designation: 'Content Writer'
+  },
+  {
+    _id: ObjectId("653a24971603bd07db58b559"),
+    id: 4,
+    name: 'Zeus',
+    address: { city: 'Hyderabad', pincode: 413002 },
+    designation: 'Tester'
+  },
+  {
+    _id: ObjectId("653a24971603bd07db58b55b"),
+    id: 6,
+    name: 'John',
+    address: { city: 'Mumbai', pincode: 412002 },
+    designation: 'Tester'
+  },
+  {
+    _id: ObjectId("653a24971603bd07db58b55c"),
+    id: 7,
+    name: 'Rohit',
+    address: { city: 'Mumbai', pincode: 412002 },
+    designation: 'Tester'
+  },
+  {
+    _id: ObjectId("653a24971603bd07db58b55d"),
+    id: 8,
+    name: 'Rohan',
+    address: { city: 'Pune', pincode: 411011 },
+    designation: 'Tester'
+  },
+  { _id: ObjectId("653a27d62690b50ed20986f5"), designation: 'Tester' }
+]
+
+Q.7] Find _id, Designation, Address and Name from all documents where Company_name is "Infosys".
+Company_system> db.Comapnies.find({ cname: "Infosys" }, { id: 1, designation: 1, address: 1, "name.FName": 1, "name.LName": 1 })
+[
+  {
+    _id: ObjectId("653a24971603bd07db58b556"),
+    id: 1,
+    address: { city: 'Pune', pincode: 411001 },
+    designation: 'Developer'
+  },
+  {
+    _id: ObjectId("653a24971603bd07db58b558"),
+    id: 3,
+    address: { city: 'Pune', pincode: 411001 },
+    designation: 'Content Writer'
+  },
+  {
+    _id: ObjectId("653a24971603bd07db58b55c"),
+    id: 7,
+    address: { city: 'Mumbai', pincode: 412002 },
+    designation: 'Tester'
+  }
+]
+
+Q.8] Selects all documents in the employee collection where the value of the Designation is either "Developer" or "Tester".
+Company_system> db.Comapnies.find({ designation: { $in: ["Developer", "Tester"] } })
+[
+  {
+    _id: ObjectId("653a24971603bd07db58b556"),
+    id: 1,
+    name: 'Ankush',
+    age: 20,
+    address: { city: 'Pune', pincode: 411001 },
+    salary: 10000,
+    cname: 'Infosys',
+    designation: 'Developer',
+    expertise: 'MySQL'
+  },
+  {
+    _id: ObjectId("653a24971603bd07db58b557"),
+    id: 2,
+    name: 'Ayush',
+    age: 22,
+    address: { city: 'Mumbai', pincode: 412002 },
+    salary: 10000,
+    cname: 'Wipro',
+    designation: 'Tester',
+    expertise: 'MongoDB'
+  },
+  {
+    _id: ObjectId("653a24971603bd07db58b559"),
+    id: 4,
+    name: 'Zeus',
+    age: 21,
+    address: { city: 'Hyderabad', pincode: 413002 },
+    salary: 22000,
+    cname: 'TCS',
+    designation: 'Tester',
+    expertise: 'MongoDB'
+  },
+  {
+    _id: ObjectId("653a24971603bd07db58b55a"),
+    id: 5,
+    name: 'Henry',
+    age: 25,
+    address: { city: 'Pune', pincode: 411001 },
+    salary: 102000,
+    cname: 'TCS',
+    designation: 'Developer',
+    expertise: 'Casandra'
+  },
+  {
+    _id: ObjectId("653a24971603bd07db58b55b"),
+    id: 6,
+    name: 'John',
+    age: 22,
+    address: { city: 'Mumbai', pincode: 412002 },
+    salary: 10000,
+    cname: 'Wipro',
+    designation: 'Tester',
+    expertise: 'MongoDB'
+  },
+  {
+    _id: ObjectId("653a24971603bd07db58b55c"),
+    id: 7,
+    name: 'Rohit',
+    age: 20,
+    address: { city: 'Mumbai', pincode: 412002 },
+    salary: 20000,
+    cname: 'Infosys',
+    designation: 'Tester',
+    expertise: 'MySQL'
+  },
+  {
+    _id: ObjectId("653a24971603bd07db58b55d"),
+    id: 8,
+    name: 'Rohan',
+    age: 22,
+    address: { city: 'Pune', pincode: 411011 },
+    salary: 102000,
+    cname: 'TCS',
+    designation: 'Tester',
+    expertise: 'MongoDB'
+  },
+  {
+    _id: ObjectId("653a27d62690b50ed20986f5"),
+    age: 25,
+    cname: 'TCS',
+    designation: 'Tester',
+    salary: 2000
+  }
+]
+
+Q.9] Find all document with Exact Match on an Array having Expertise: ['Mongodb','Mysql', 'Cassandra']
+Company_system> db.Comapnies.find({ expertise: ['MongoDB', 'MySQL', 'Casandra'] })
+>> EMPTY SET
+
+Q.10] Drop Single documents where designation="Developer"
+Company_system> db.Comapnies.deleteMany({ designation: "Developer" })
+{ acknowledged: true, deletedCount: 2 }
+Company_system> db.Comapnies.find().pretty()
+[
+  {
+    _id: ObjectId("653a24971603bd07db58b557"),
+    id: 2,
+    name: 'Ayush',
+    age: 22,
+    address: { city: 'Mumbai', pincode: 412002 },
+    salary: 10000,
+    cname: 'Wipro',
+    designation: 'Tester',
+    expertise: 'MongoDB'
+  },
+  {
+    _id: ObjectId("653a24971603bd07db58b558"),
+    id: 3,
+    name: 'Rakesh',
+    age: 22,
+    address: { city: 'Pune', pincode: 411001 },
+    salary: 5000,
+    cname: 'Infosys',
+    designation: 'Content Writer',
+    expertise: 'MySQL'
+  },
+  {
+    _id: ObjectId("653a24971603bd07db58b559"),
+    id: 4,
+    name: 'Zeus',
+    age: 21,
+    address: { city: 'Hyderabad', pincode: 413002 },
+    salary: 22000,
+    cname: 'TCS',
+    designation: 'Tester',
+    expertise: 'MongoDB'
+  },
+  {
+    _id: ObjectId("653a24971603bd07db58b55b"),
+    id: 6,
+    name: 'John',
+    age: 22,
+    address: { city: 'Mumbai', pincode: 412002 },
+    salary: 10000,
+    cname: 'Wipro',
+    designation: 'Tester',
+    expertise: 'MongoDB'
+  },
+  {
+    _id: ObjectId("653a24971603bd07db58b55c"),
+    id: 7,
+    name: 'Rohit',
+    age: 20,
+    address: { city: 'Mumbai', pincode: 412002 },
+    salary: 20000,
+    cname: 'Infosys',
+    designation: 'Tester',
+    expertise: 'MySQL'
+  },
+  {
+    _id: ObjectId("653a24971603bd07db58b55d"),
+    id: 8,
+    name: 'Rohan',
+    age: 22,
+    address: { city: 'Pune', pincode: 411011 },
+    salary: 102000,
+    cname: 'TCS',
+    designation: 'Tester',
+    expertise: 'MongoDB'
+  },
+  {
+    _id: ObjectId("653a27d62690b50ed20986f5"),
+    age: 25,
+    cname: 'TCS',
+    designation: 'Tester',
+    salary: 2000
+  }
+] 
