@@ -1,0 +1,664 @@
+-- Queries
+-- 1. Find the names of all branches in the loan relation.
+SELECT DISTINCT branch_name FROM Loan;
+
+-- 2. Find all loan numbers for loans made at „Wadia College‟ Branch with loan amount > 12000.
+SELECT loan_no
+FROM Loan
+WHERE branch_name = 'Wadia College' AND amount > 12000;
+
+-- 3. Find all customers who have a loan from the bank. Find their names, loan_no, and loan amount.
+SELECT c.cust_name, l.loan_no, l.amount
+FROM Customer c
+JOIN Borrower b ON c.cust_name = b.cust_name
+JOIN Loan l ON b.loan_no = l.loan_no;
+
+-- 4. List all customers in alphabetical order who have a loan from „Wadia College‟ branch.
+SELECT DISTINCT c.cust_name
+FROM Customer c
+JOIN Borrower b ON c.cust_name = b.cust_name
+JOIN Loan l ON b.loan_no = l.loan_no
+WHERE l.branch_name = 'Wadia College'
+ORDER BY c.cust_name;
+
+-- 5. Display distinct cities of the branch. Give me in a single code.
+SELECT DISTINCT branch_city FROM Branch;
+
+-- 1. Find all customers who have both account and loan at the bank.
+SELECT DISTINCT c.cust_name
+FROM Customer c
+JOIN Depositor d ON c.cust_name = d.cust_name
+JOIN Account a ON d.acc_no = a.Acc_no
+JOIN Borrower b ON c.cust_name = b.cust_name
+JOIN Loan l ON b.loan_no = l.loan_no;
+
+-- 2. Find all customers who have an account or loan or both at the bank.
+SELECT DISTINCT c.cust_name
+FROM Customer c
+LEFT JOIN Depositor d ON c.cust_name = d.cust_name
+LEFT JOIN Account a ON d.acc_no = a.Acc_no
+LEFT JOIN Borrower b ON c.cust_name = b.cust_name
+LEFT JOIN Loan l ON b.loan_no = l.loan_no
+WHERE a.Acc_no IS NOT NULL OR l.loan_no IS NOT NULL;
+
+-- 3. Find all customers who have an account but no loan at the bank.
+SELECT DISTINCT c.cust_name
+FROM Customer c
+JOIN Depositor d ON c.cust_name = d.cust_name
+JOIN Account a ON d.acc_no = a.Acc_no
+LEFT JOIN Borrower b ON c.cust_name = b.cust_name
+WHERE b.loan_no IS NULL;
+
+-- 4. Find average account balance at „Wadia College‟ branch.
+SELECT AVG(balance) AS average_balance
+FROM Account
+WHERE branch_name = 'Wadia College';
+
+-- 5. Find the number of depositors at each branch.
+SELECT branch_name, COUNT(DISTINCT cust_name) AS num_depositors
+FROM Depositor
+GROUP BY branch_name;
+
+-- 1. Find the branches where average account balance > 15000.
+SELECT branch_name
+FROM Account
+GROUP BY branch_name
+HAVING AVG(balance) > 15000;
+
+-- 2. Find the number of tuples in the customer relation.
+SELECT COUNT(*) AS num_tuples
+FROM Customer;
+
+-- 3. Calculate the total loan amount given by the bank.
+SELECT SUM(amount) AS total_loan_amount
+FROM Loan;
+
+-- 4. Delete all loans with loan amount between 1300 and 1500.
+DELETE FROM Loan
+WHERE amount BETWEEN 1300 AND 1500;
+
+-- 5. Find the average account balance at each branch.
+SELECT branch_name, AVG(balance) AS average_balance
+FROM Account
+GROUP BY branch_name;
+
+-- 6. Find the name of Customer and city where the customer name starts with the letter P.
+SELECT cust_name, cust_city
+FROM Customer
+WHERE cust_name LIKE 'P%';
+
+
+
+
+
+-- Queries
+-- 1. List names of customers having 'A' as the second letter in their name.
+SELECT * FROM Cust_Master WHERE SUBSTRING(Cust_name, 2, 1) = 'A';
+
+-- 2. Display orders from Customer no C1002, C1005, C1007, and C1008.
+SELECT * FROM Order WHERE Cust_no IN (1002, 1005, 1007, 1008);
+
+-- 3. List clients who stay in either 'Banglore' or 'Manglore'.
+SELECT * FROM Cust_Master WHERE Cust_addr IN ('Banglore', 'Manglore');
+
+-- 4. Display the name of customers and the product_name they have purchased.
+SELECT cm.Cust_name, p.Product_name
+FROM Cust_Master cm
+JOIN Order o ON cm.Cust_no = o.Cust_no
+JOIN Product p ON o.Order_no = p.Order_no;
+
+-- 5. Create view View1 consisting of Cust_name, Product_name.
+CREATE VIEW View1 AS
+SELECT cm.Cust_name, p.Product_name
+FROM Cust_Master cm
+JOIN Order o ON cm.Cust_no = o.Cust_no
+JOIN Product p ON o.Order_no = p.Order_no;
+
+-- 6. Display product_name and quantity purchased by each customer.
+SELECT cm.Cust_name, p.Product_name, o.Qty_Ordered
+FROM Cust_Master cm
+JOIN Order o ON cm.Cust_no = o.Cust_no
+JOIN Product p ON o.Order_no = p.Order_no;
+
+-- 7. Perform different join operations (e.g., INNER JOIN, LEFT JOIN, RIGHT JOIN, FULL JOIN) depending on your specific needs.
+-- Example: INNER JOIN
+SELECT cm.Cust_name, p.Product_name
+FROM Cust_Master cm
+INNER JOIN Order o ON cm.Cust_no = o.Cust_no
+INNER JOIN Product p ON o.Order_no = p.Order_no;
+
+
+
+-- Queries
+-- 1. Find the names of all employees who work for 'TCS'.
+SELECT employee_name
+FROM Works
+WHERE company_name = 'TCS';
+
+-- 2. Find the names and company names of all employees sorted in ascending order of company name and descending order of employee names of that company.
+SELECT employee_name, company_name
+FROM Works
+ORDER BY company_name ASC, employee_name DESC;
+
+-- 3. Change the city of the employee working with InfoSys to 'Bangalore'.
+UPDATE Employee
+SET city = 'Bangalore'
+WHERE employee_name IN (SELECT employee_name FROM Works WHERE company_name = 'InfoSys');
+
+-- 4. Find the names, street address, and cities of residence for all employees who work for 'TechM' and earn more than $10,000.
+SELECT e.employee_name, e.street, e.city
+FROM Employee e
+JOIN Works w ON e.employee_name = w.employee_name
+WHERE w.company_name = 'TechM' AND w.salary > 10000;
+
+-- 5. Add Column Asset to Company table.
+ALTER TABLE Company
+ADD COLUMN Asset DECIMAL(15,2);
+
+
+-- 1. Change the city of the employee working with InfoSys to 'Bangalore'.
+UPDATE Employee
+SET city = 'Bangalore'
+WHERE employee_name IN (SELECT employee_name FROM Works WHERE company_name = 'InfoSys');
+
+-- 2. Find the names of all employees who earn more than the average salary of all employees of their company. Assume that all people work for at most one company.
+SELECT e.employee_name
+FROM Employee e
+JOIN Works w ON e.employee_name = w.employee_name
+WHERE w.salary > (SELECT AVG(salary) FROM Works WHERE company_name = w.company_name);
+
+-- 3. Find the names, street address, and cities of residence for all employees who work for 'TechM' and earn more than $10,000.
+SELECT e.employee_name, e.street, e.city
+FROM Employee e
+JOIN Works w ON e.employee_name = w.employee_name
+WHERE w.company_name = 'TechM' AND w.salary > 10000;
+
+-- 4. Change the name of the table Manages to Management.
+ALTER TABLE Manages
+RENAME TO Management;
+
+-- 5. Create Simple and Unique index on the employee table.
+CREATE INDEX idx_employee_name ON Employee(employee_name);
+CREATE UNIQUE INDEX idx_emp_id ON Employee(emp_id);
+
+-- 6. Display index Information.
+SHOW INDEX FROM Employee;
+
+
+-- 1. Create a View1 to display List all customers in alphabetical order who have a loan from Pune_Station branch.
+CREATE VIEW View1 AS
+SELECT DISTINCT c.cust_name
+FROM Customer c
+JOIN Borrower b ON c.cust_name = b.cust_name
+JOIN Loan l ON b.loan_no = l.loan_no
+WHERE l.branch_name = 'Pune_Station'
+ORDER BY c.cust_name;
+
+-- 2. Create View2 on the branch table by selecting any two columns and perform insert, update, delete operations.
+CREATE VIEW View2 AS
+SELECT branch_name, branch_city
+FROM Branch;
+
+
+-- 3. Create View3 on borrower and depositor tables by selecting any one column from each table and perform insert, update, delete operations.
+CREATE VIEW View3 AS
+SELECT b.cust_name
+FROM Borrower b
+JOIN Depositor d ON b.cust_name = d.cust_name;
+
+
+-- 4. Create Union of left and right join for all customers who have an account or loan or both at the bank.
+CREATE VIEW View4 AS
+SELECT c.cust_name, a.Acc_no, l.loan_no
+FROM Customer c
+LEFT JOIN Depositor d ON c.cust_name = d.cust_name
+LEFT JOIN Account a ON d.acc_no = a.Acc_no
+LEFT JOIN Borrower b ON c.cust_name = b.cust_name
+LEFT JOIN Loan l ON b.loan_no = l.loan_no
+UNION
+SELECT c.cust_name, a.Acc_no, l.loan_no
+FROM Customer c
+RIGHT JOIN Depositor d ON c.cust_name = d.cust_name
+RIGHT JOIN Account a ON d.acc_no = a.Acc_no
+RIGHT JOIN Borrower b ON c.cust_name = b.cust_name
+RIGHT JOIN Loan l ON b.loan_no = l.loan_no;
+
+-- 5. Create Simple and Unique index.
+CREATE INDEX idx_cust_name ON Customer(cust_name);
+CREATE UNIQUE INDEX idx_acc_no ON Account(Acc_no);
+
+-- 6. Display index Information.
+SHOW INDEX FROM Customer;
+SHOW INDEX FROM Account;
+
+-- Sample data insertion for demonstration purposes
+INSERT INTO Companies (comp_id, name, cost, year) VALUES
+(1, 'Company1', 1000, 2000),
+(2, 'Company2', 1500, 2005),
+(3, 'Company3', 1200, 2010);
+
+INSERT INTO Orders (comp_id, domain, quantity) VALUES
+(1, 'Domain1', 50),
+(1, 'Domain2', 30),
+(2, 'Domain3', 20),
+(3, 'Domain4', 40);
+
+-- 1. Find names, costs, domains, and quantities for companies using inner join.
+SELECT c.name, c.cost, o.domain, o.quantity
+FROM Companies c
+INNER JOIN Orders o ON c.comp_id = o.comp_id;
+
+-- 2. Find names, costs, domains, and quantities for companies using left outer join.
+SELECT c.name, c.cost, o.domain, o.quantity
+FROM Companies c
+LEFT OUTER JOIN Orders o ON c.comp_id = o.comp_id;
+
+-- 3. Find names, costs, domains, and quantities for companies using right outer join.
+SELECT c.name, c.cost, o.domain, o.quantity
+FROM Companies c
+RIGHT OUTER JOIN Orders o ON c.comp_id = o.comp_id;
+
+-- 4. Find names, costs, domains, and quantities for companies using Union operator.
+SELECT name, cost, NULL AS domain, NULL AS quantity FROM Companies
+UNION
+SELECT NULL AS name, NULL AS cost, domain, quantity FROM Orders;
+
+-- 5. Create View View1 by selecting both tables to show company name and quantities.
+CREATE VIEW View1 AS
+SELECT c.name AS company_name, o.quantity
+FROM Companies c
+INNER JOIN Orders o ON c.comp_id = o.comp_id;
+
+-- 6. Create View View2 by selecting any two columns and perform insert, update, delete operations.
+CREATE VIEW View2 AS
+SELECT comp_id, name
+FROM Companies;
+
+
+-- 7. Display content of View1, View2.
+SELECT * FROM View1;
+SELECT * FROM View2;
+
+
+
+-- 1. List all stationary items with a price between 400/- to 1000/-
+SELECT * FROM ITEMS WHERE Itype = 'Stationary' AND Iprice BETWEEN 400 AND 1000;
+
+-- 2. Change the mobile number of customer “Gopal”
+UPDATE CUSTOMERS SET CMobile = '9876543210' WHERE Cname = 'Gopal';
+
+-- 3. Display the item with the maximum price
+SELECT * FROM ITEMS WHERE Iprice = (SELECT MAX(Iprice) FROM ITEMS);
+
+-- 4. Display all purchases sorted from the most recent to the oldest
+SELECT * FROM PURCHASE ORDER BY Pdate DESC;
+
+-- 5. Count the number of customers in every city
+SELECT Ccity, COUNT(*) AS num_customers FROM CUSTOMERS GROUP BY Ccity;
+
+-- 6. Display all purchased quantity of Customer Maya
+SELECT Pquantity FROM PURCHASE WHERE Cno = (SELECT CNo FROM CUSTOMERS WHERE Cname = 'Maya');
+
+-- 7. Create a view that shows Iname, Price, and Count of all stationary items in descending order of price.
+CREATE VIEW StationaryItemsView AS
+SELECT Iname, Iprice, Icount FROM ITEMS WHERE Itype = 'Stationary' ORDER BY Iprice DESC;
+
+---------------------------------------------------------------------------------------------------------------------------------
+
+#MONGODB
+
+// 1. Select all documents where the Designation field has the value "Programmer" and the value of the salary field is greater than 30000.
+db.Employee.find({ Designation: "Programmer", Salary: { $gt: 30000 } })
+
+// 2. Creates a new document if no document in the employee collection contains {Designation: "Tester", Company_name: "TCS", Age: 25}.
+db.Employee.update(
+  { Designation: "Tester", Company_name: "TCS", Age: 25 },
+  { $setOnInsert: { Designation: "Tester", Company_name: "TCS", Age: 25 } },
+  { upsert: true }
+)
+
+// 3. Increase the salary of each Employee working with “Infosys” by 10000.
+db.Employee.updateMany(
+  { Company_name: "Infosys" },
+  { $inc: { Salary: 10000 } }
+)
+
+// 4. Finds all employees working with "TCS" and reduce their salary by 5000.
+db.Employee.updateMany(
+  { Company_name: "TCS" },
+  { $inc: { Salary: -5000 } }
+)
+
+// 5. Return documents where Designation is not equal to "Tester".
+db.Employee.find({ Designation: { $ne: "Tester" } })
+
+// 6. Find all employees with an exact match on an array having Expertise: ['Mongodb', 'Mysql', 'Cassandra'].
+db.Employee.find({ Expertise: ['Mongodb', 'Mysql', 'Cassandra'] })
+
+// 1. Final name of Employee where age is less than 30 and salary more than 50000.
+db.Employee.findOne({ Age: { $lt: 30 }, Salary: { $gt: 50000 } }, { _id: 0, Name: 1 })
+
+// 2. Creates a new document if no document in the employee collection contains {Designation: "Tester", Company_name: "TCS", Age: 25}.
+db.Employee.update(
+  { Designation: "Tester", Company_name: "TCS", Age: 25 },
+  { $setOnInsert: { Designation: "Tester", Company_name: "TCS", Age: 25 } },
+  { upsert: true }
+)
+
+// 3. Selects all documents in the collection where the field age has a value less than 30 or the value of the salary field is greater than 40000.
+db.Employee.find({ $or: [ { Age: { $lt: 30 } }, { Salary: { $gt: 40000 } } ] })
+
+// 4. Find documents where Designation is not equal to "Developer".
+db.Employee.find({ Designation: { $ne: "Developer" } })
+
+// 5. Find _id, Designation, Address, and Name from all documents where Company_name is "Infosys".
+db.Employee.find({ Company_name: "Infosys" }, { _id: 1, Designation: 1, Address: 1, Name: 1 })
+
+// 6. Display only FName and LName of all Employees.
+db.Employee.find({}, { _id: 0, "Name.FName": 1, "Name.LName": 1 })
+
+// 1. Creates a new document if no document in the employee collection contains {Designation: "Tester", Company_name: "TCS", Age: 25}.
+db.Employee.update(
+  { Designation: "Tester", Company_name: "TCS", Age: 25 },
+  { $setOnInsert: { Designation: "Tester", Company_name: "TCS", Age: 25 } },
+  { upsert: true }
+)
+
+// 2. Finds all employees working with Company_name: "TCS" and increase their salary by 2000.
+db.Employee.updateMany(
+  { Company_name: "TCS" },
+  { $inc: { Salary: 2000 } }
+)
+
+// 3. Matches all documents where the value of the field Address is an embedded document that contains only the field city with the value "Pune" and the field Pin_code with the value "411001".
+db.Employee.find({ "Address.city": "Pune", "Address.Pin_code": "411001" })
+
+// 4. Find employee details who are working as "Developer" or "Tester".
+db.Employee.find({ Designation: { $in: ["Developer", "Tester"] } })
+
+// 5. Drop Single documents where designation="Developer".
+db.Employee.deleteOne({ Designation: "Developer" })
+
+// 6. Count number of documents in employee collection.
+db.Employee.countDocuments()
+
+
+// 1. Using aggregation Return separates value in the Expertise array and return sum of each element of array.
+db.Employee.aggregate([
+  {
+    $unwind: "$Expertise"
+  },
+  {
+    $group: {
+      _id: "$Expertise",
+      total: { $sum: 1 }
+    }
+  }
+])
+
+// 2. Using Aggregate method return Max and Min Salary for each company.
+db.Employee.aggregate([
+  {
+    $group: {
+      _id: "$Company_name",
+      maxSalary: { $max: "$Salary" },
+      minSalary: { $min: "$Salary" }
+    }
+  }
+])
+
+// 3. Using Aggregate method find Employee with Total Salary for Each City with Designation="DBA".
+db.Employee.aggregate([
+  {
+    $match: {
+      Designation: "DBA"
+    }
+  },
+  {
+    $group: {
+      _id: "$Address.city",
+      totalSalary: { $sum: "$Salary" }
+    }
+  }
+])
+
+// 4. Using aggregation method Return separates value in the Expertise array for employee name where Swapnil Jadhav
+db.Employee.aggregate([
+  {
+    $match: {
+      "Name.FName": "Swapnil",
+      "Name.LName": "Jadhav"
+    }
+  },
+  {
+    $unwind: "$Expertise"
+  },
+  {
+    $group: {
+      _id: "$_id",
+      Expertise: { $push: "$Expertise" }
+    }
+  }
+])
+
+// 5. To Create Compound Indexes on Name: 1, Age: -1
+db.Employee.createIndex({ "Name.FName": 1, Age: -1 })
+
+// 6. Create an Index on Emp_id field, compare the time required to search Emp_id before and after creating an index. (Hint Add at least 10000 Documents)
+// -- Add 10000 documents
+for (let i = 1; i <= 10000; i++) {
+  db.Employee.insert({ Emp_id: i, Name: "Employee" + i, Salary: 50000 })
+}
+
+// -- Time to search Emp_id before creating an index
+const startTimeWithoutIndex = new Date();
+db.Employee.find({ Emp_id: 5000 });
+const endTimeWithoutIndex = new Date();
+print("Time without index: " + (endTimeWithoutIndex - startTimeWithoutIndex) + " milliseconds");
+
+// -- Create an index on Emp_id
+db.Employee.createIndex({ Emp_id: 1 });
+
+// -- Time to search Emp_id after creating an index
+const startTimeWithIndex = new Date();
+db.Employee.find({ Emp_id: 5000 });
+const endTimeWithIndex = new Date();
+print("Time with index: " + (endTimeWithIndex - startTimeWithIndex) + " milliseconds");
+
+// 7. Return a List of Indexes on created on employee Collection.
+db.Employee.getIndexes()
+
+// 1. Display the total salary per company
+db.Employee.aggregate([
+  {
+    $group: {
+      _id: "$Company_name",
+      totalSalary: { $sum: "$Salary" }
+    }
+  }
+])
+
+// 2. Display the total salary of company Name:"TCS"
+db.Employee.aggregate([
+  {
+    $match: { Company_name: "TCS" }
+  },
+  {
+    $group: {
+      _id: "$Company_name",
+      totalSalary: { $sum: "$Salary" }
+    }
+  }
+])
+
+// 3. Return the average salary of the company whose address is “Pune".
+db.Employee.aggregate([
+  {
+    $match: { "Address.city": "Pune" }
+  },
+  {
+    $group: {
+      _id: "$Company_name",
+      avgSalary: { $avg: "$Salary" }
+    }
+  }
+])
+
+// 4. Display the total count for “City=Pune”
+db.Employee.aggregate([
+  {
+    $match: { "Address.city": "Pune" }
+  },
+  {
+    $group: {
+      _id: null,
+      totalCount: { $sum: 1 }
+    }
+  }
+])
+
+// 5. Return the count for the city Pune and age greater than 40.
+db.Employee.aggregate([
+  {
+    $match: { "Address.city": "Pune", Age: { $gt: 40 } }
+  },
+  {
+    $group: {
+      _id: null,
+      totalCount: { $sum: 1 }
+    }
+  }
+])
+
+----------------------------------------------------------------------------------------------------------------------------------
+
+#PLSQL
+
+CREATE OR REPLACE PROCEDURE proc_grade
+(var_rollno IN int,
+p_roll_no OUT Stud_Marks.roll_no%type,
+p_name OUT Stud_Marks.name%type,
+p_total OUT Stud_Marks.total_marks%type)
+AS
+BEGIN
+select roll_no,name,total_marks into p_roll_no,p_name,p_total from Stud_Marks where roll_no=var_rollno;
+IF(p_total <= 1500 AND p_total >= 990) THEN 
+insert into Result values(p_roll_no,p_name,'DISTINCTION');
+ELSIF(p_total <= 989 AND p_total >= 900) THEN 
+insert into Result values(p_roll_no,p_name,'FIRST CLASS');
+ELSIF(p_total <= 899 AND p_total >= 825) THEN 
+insert into Result values(p_roll_no,p_name,'SECOND CLASS');
+ELSE
+insert into Result values(p_roll_no,p_name,'FAIL');
+END IF;
+EXCEPTION
+WHEN no_data_found THEN dbms_output.put_line('Roll no ' || var_rollno || 'not found');
+END;
+/
+
+DECLARE
+var_rollno int;
+p_roll_no Stud_Marks.roll_no%type;
+p_name Stud_Marks.name%type;
+p_total Stud_Marks.total_marks%type;
+BEGIN
+var_rollno:=&var_rollno;
+proc_grade(var_rollno,p_roll_no,p_name,p_total);
+END;
+/
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+#Connectivity
+
+import pymongo
+
+# Connect to MongoDB
+client = pymongo.MongoClient("mongodb://localhost:27017/")  # Replace with your MongoDB URI
+
+# Create or use a database
+db = client["sample_db"]
+
+# Create or use a collection
+collection = db["sample_collection"]
+
+def add_data(data):
+    # Insert a document
+    collection.insert_one(data)
+    print("Data added successfully.")
+
+def delete_data(query):
+    # Delete documents that match the query
+    result = collection.delete_many(query)
+    print(f"{result.deleted_count} documents deleted.")
+
+def update_data(query, new_data):
+    # Update a single document that matches the query
+    result = collection.update_one(query, {"$set": new_data})
+    if result.modified_count > 0:
+        print("Data updated successfully.")
+    else:
+        print("No matching document found for update.")
+
+def display_data():
+    # Retrieve and display all documents in the collection
+    for doc in collection.find():
+        print(doc)
+
+while True:
+    print("\nMenus:")
+    print("1. Add")
+    print("2. Delete")
+    print("3. Update")
+    print("4. Display")
+    print("5. Exit")
+
+    choice = input("Enter your choice: ")
+
+    if choice == "1":
+        data = {
+            "name": input("Enter name: "),
+            "age": int(input("Enter age: "))
+        }
+        add_data(data)
+
+    elif choice == "2":
+        key = input("Enter the key to delete by (e.g., name or age): ")
+        value = input(f"Enter the {key} to delete: ")
+
+        query = {}
+        if key == "age":
+            query[key] = int(value)  # Convert to integer for age
+        else:
+            query[key] = value
+
+        delete_data(query)
+
+    elif choice == "3":
+        key = input("Enter the key to update by (e.g., name or age): ")
+        value = input(f"Enter the {key} to update: ")
+        new_value = input(f"Enter the new {key}: ")
+
+        query = {}
+        if key == "age":
+            query[key] = int(value)  # Convert to integer for age
+        else:
+            query[key] = value
+
+        new_data = {key: int(new_value) if key == "age" else new_value}  # Convert to integer for age
+
+        update_data(query, new_data)
+
+    elif choice == "4":
+        display_data()
+
+    elif choice == "5":
+        break
+
+    else:
+        print("Invalid choice. Please try again.")
+
+# Close the database connection
+client.close()
+
+
