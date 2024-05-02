@@ -1,0 +1,385 @@
+1.dfsbfs
+
+from queue import Queue
+
+def BFS(start):
+    q = Queue()
+    q.put(start)
+    visited[start] = 1
+
+    while not q.empty():
+        v = q.get()
+        print(" -->", v, end="")
+        for i in range(n):
+            if not visited[i] and graph[v][i] == 1:
+                q.put(i)
+                visited[i] = 1
+
+def DFS(x, visited):
+    if visited[x] == 1:
+        return
+    visited[x] = 1
+    print("--->", x, end=" ")
+    for i in range(n):
+        if graph[x][i] == 1 and visited[i] != 1:
+            DFS(i, visited)
+
+n = int(input("Enter number of vertices: "))
+graph = [[0 for i in range(n)] for i in range(n)]
+
+for i in range(n):
+    for j in range(i + 1, n):
+        graph[i][j] = int(input(f"Enter 1 if edge is present in between graph[{i}][{j}]: "))
+        graph[j][i] = graph[i][j]
+
+for i in range(n):
+    for j in range(n):
+        print(graph[i][j], end=" ")
+    print("\n")
+
+visited = n * [0]
+
+for i in range(n):
+    if not visited[i]:
+        DFS(i, visited)
+
+visited = n * [0]
+
+print("\n")
+
+for j in range(n):
+    if not visited[j]:
+        BFS(j)
+
+Output:
+
+Enter number of vertices: 4
+Enter 1 if edge is present in between graph[0][1]: 1
+Enter 1 if edge is present in between graph[0][2]: 0
+Enter 1 if edge is present in between graph[0][3]: 1
+Enter 1 if edge is present in between graph[1][2]: 1
+Enter 1 if edge is present in between graph[1][3]: 0
+Enter 1 if edge is present in between graph[2][3]: 1
+
+0 1 0 1 
+1 0 1 0 
+0 1 0 1 
+1 0 1 0 
+
+---> 0 ---> 1 ---> 2 ---> 3 
+ --> 0 --> 1 --> 3 --> 2
+
+2. astar
+
+import heapq
+
+def heuristic(state, goal):
+    misplaced = 0
+    for i in range(3):
+        for j in range(3):
+            if state[i][j] != goal[i][j]:
+                misplaced += 1
+    return misplaced
+
+def a_star_search(start, goal):
+    open_list = []
+    closed_list = set()
+    heapq.heappush(open_list, (heuristic(start, goal), start, 0, []))
+
+    while open_list:
+        _, current, cost, path = heapq.heappop(open_list)
+        if current == goal:
+            return path
+        closed_list.add(tuple(map(tuple, current)))
+
+        zero_i, zero_j = next((i, j) for i, row in enumerate(current) for j, val in enumerate(row) if val == 0)
+
+        for move_i, move_j, operation in ((0, 1, 'right'), (0, -1, 'left'), (1, 0, 'down'), (-1, 0, 'up')):
+            new_i, new_j = zero_i + move_i, zero_j + move_j
+            if 0 <= new_i < 3 and 0 <= new_j < 3:
+                new_state = [row[:] for row in current]
+                new_state[zero_i][zero_j], new_state[new_i][new_j] = new_state[new_i][new_j], new_state[zero_i][zero_j]
+                if tuple(map(tuple, new_state)) not in closed_list:
+                    new_cost = cost + 1
+                    heapq.heappush(open_list, (new_cost + heuristic(new_state, goal), new_state, new_cost, path + [(operation, new_state)]))
+    return None
+
+#INPUT FROM USER
+def take_input():
+    print("Enter the initial state of the 8-puzzle (3x3 grid, use 0 to represent the blank space):")
+    initial_state = []
+    for i in range(3):
+        row = list(map(int, input().split()))
+        initial_state.append(row)
+    return initial_state
+
+def take_goal():
+    print("Enter the goal state of the 8-puzzle (3x3 grid, use 0 to represent the blank space):")
+    goal_state = []
+    for i in range(3):
+        row = list(map(int, input().split()))
+        goal_state.append(row)
+    return goal_state
+
+def print_puzzle_path(path):
+    for step, (operation, state) in enumerate(path):
+        print(f"Step {step + 1}: Perform {operation}")
+        for row in state:
+            print(row)
+        print(f"Heuristic Value: {heuristic(state, goal_state)}")
+        print()
+
+
+start_state = take_input()
+goal_state = take_goal()
+path = a_star_search(start_state, goal_state)
+if path:
+    print("Solution path:")
+    print_puzzle_path(path)
+else:
+    print("No solution found")
+
+Output:
+
+Enter the initial state of the 8-puzzle (3x3 grid, use 0 to represent the blank space):
+1 2 3
+4 5 6
+7 8 0
+Enter the goal state of the 8-puzzle (3x3 grid, use 0 to represent the blank space):
+1 2 3
+4 0 6
+7 5 8
+Solution path:
+Step 1: Perform left
+[1, 2, 3]
+[4, 5, 6]
+[7, 0, 8]
+Heuristic Value: 2
+
+Step 2: Perform up
+[1, 2, 3]
+[4, 0, 6]
+[7, 5, 8]
+Heuristic Value: 0
+
+3.job seq
+
+def job_sequencing(job):
+    n = len(job)
+    timeslot = [-1] * n
+
+    selection_sort(job)
+    print(job)
+
+    for i in range(n):
+        deadline = job[i][1]
+        for j in range(min(deadline,n)-1,-1,-1):
+            if timeslot[j] == -1:
+                timeslot[j] = i;
+                break
+
+    # for i in timeslot:
+    #     if i != -1:
+    #         print("|",job[i],end="\t")
+    #     else:
+    #         print("|    ----",end="\t")
+    # print("|")
+    # for i in range(n+1):
+    #     print(i,end="\t\t")
+
+    schedule = [job[i] for i in timeslot if i != -1]
+    return schedule 
+
+def selection_sort(job):
+    n = len(job)
+    for i in range(n-1):
+        min = i
+        for j in range(i+1,n): 
+            if job[min][0] < job[j][0]:
+                min = j
+        job[min],job[i] = job[i],job[min]
+
+
+job = [(5,3),(6,2),(10,5),(1,2),(2,2)]
+
+print("\n\nResult: ",job_sequencing(job))
+
+Output:
+
+(10, 5), (6, 2), (5, 3), (2, 2), (1, 2)]
+
+
+Result:  [(10, 5), (6, 2), (5, 3)]
+
+4.n queen
+
+def issafe(arr,x,y,n):
+    for row in range(x):
+        if(arr[row][y])==1:
+            return False
+    row=x
+    col=y
+    #diagonal
+    while row>=0 and col>=0:
+        if arr[row][col]==1:
+            return False
+        row-=1
+        col-=1
+    row=x
+    col=y
+    
+    while row>=0 and col<n:
+        if arr[row][col]==1:
+            return False
+        row-=1
+        col+=1
+
+    return True
+
+def nqueen (arr,x,n):
+    if x>=n:
+        return True
+    
+    for col in range(n):
+        if issafe(arr,x,col,n):
+            arr[x][col]=1
+            if nqueen(arr,x+1,n):
+                return True
+            arr[x][col]=0
+
+    return False
+
+def main():
+    n=int(input("enter num of queens"))
+    arr=[[0]*n for i in range(n)]
+
+    if nqueen(arr,0,n):
+        for i in range(n):
+            for j in range(n):
+                print(arr[i][j],end=" ")
+            print()
+if __name__=='__main__':
+    main()
+
+Output:
+
+enter num of queens4
+0 1 0 0 
+0 0 0 1 
+1 0 0 0 
+0 0 1 0
+
+5. chatbot
+
+import random
+
+class CustomerSupportChatbot:
+    def __init__(self):
+        self.greetings = ["Hi there! How can I assist you today?", "Hello! What can I help you with?", "Hey! How may I help you?"]
+        self.responses = {
+            "order status": "To check your order status, please provide your order number.",
+            "payment issue": "For payment issues, please contact our billing department at billing@example.com.",
+            "product information": "To learn more about our products, please visit our website at www.example.com/products.",
+            "technical support": "For technical support, please visit our support page at www.example.com/support.",
+            "general inquiry": "For general inquiries, you can reach out to us at info@example.com."
+        }
+
+    def respond_to_inquiry(self, inquiry):
+        inquiry = inquiry.lower()
+        for key, value in self.responses.items():
+            if key in inquiry:
+                return value
+        return "I'm sorry, I couldn't understand your inquiry. Please provide more details or try a different question."
+
+chatbot = CustomerSupportChatbot()
+print(random.choice(chatbot.greetings))
+while True:
+    user_input = input("You: ")
+    if user_input.lower() == 'exit':
+        print("Goodbye! Have a great day!")
+        break
+    else:
+        response = chatbot.respond_to_inquiry(user_input)
+        print("Bot:",response)
+
+Output:
+
+Hi there! How can I assist you today?
+You: What's the status of my order?
+Bot: To check your order status, please provide your order number.
+
+You: I'm having issues with my payment.
+Bot: For payment issues, please contact our billing department at billing@example.com.
+
+You: Can you provide information about your products?
+Bot: To learn more about our products, please visit our website at www.example.com/products.
+
+You: I need technical support.
+Bot: For technical support, please visit our support page at www.example.com/support.
+
+You: Can I ask you something general?
+Bot: For general inquiries, you can reach out to us at info@example.com.
+
+You: exit
+Goodbye! Have a great day!
+
+6. expert system
+
+
+class ExpertSystem:
+    def __init__(self):
+        self.knowledge_base = {
+            "computer_wont_turn_on": {
+                "symptoms": ["No lights", "No noise", "No response when pressing power button"],
+                "solution": "Check power source, ensure power cable is connected, try different power outlet."
+            },
+            "computer_running_slow": {
+                "symptoms": ["Programs take a long time to open", "Frequent freezing or crashing"],
+                "solution": "Check for malware, close unnecessary programs running in the background, clear temporary files."
+            },
+            "no_internet_connection": {
+                "symptoms": ["Unable to browse websites", "Network icon showing no connection"],
+                "solution": "Check network cables, restart router, reset network settings."
+            },
+            "printer_not_printing": {
+                "symptoms": ["Print job stuck in queue", "Printer not responding to print commands"],
+                "solution": "Check printer connections, restart printer, reinstall printer drivers."
+            },
+            "software_crashing": {
+                "symptoms": ["Frequent crashes when using a specific software"],
+                "solution": "Update software to the latest version, check for compatibility issues."
+            }
+        }
+
+    def diagnose_issue(self, symptoms):
+        for issue, details in self.knowledge_base.items():
+            if any(symptom in symptoms for symptom in details["symptoms"]):
+                return issue, details["solution"]
+        return "Unknown", "Unable to diagnose the issue based on provided symptoms."
+
+# def get_user_symptoms():
+#     user_input = input("Please enter the symptoms you are experiencing as a list (e.g., ['No lights', 'No noise']):").strip()
+#     return eval(user_input)
+def get_user_symptoms():
+    while True:
+        try:
+            user_input = input("Please enter the symptoms you are experiencing as a list (e.g., ['No lights', 'No noise']): ").strip()
+            symptoms = eval(user_input)
+            if not isinstance(symptoms, list):
+                raise ValueError
+            return symptoms
+        except (SyntaxError, NameError, ValueError):
+            print("Invalid input. Please enter the symptoms as a list.")
+
+
+expert_system = ExpertSystem()
+user_symptoms = get_user_symptoms()
+issue, solution = expert_system.diagnose_issue(user_symptoms)
+print("Diagnosed Issue:", issue)
+print("Solution:", solution)
+
+Output:
+
+Input :   Please enter the symptoms you are experiencing as a list (e.g., ['No lights', 'No noise']): ['No lights', 'No noise']
+ouput : Diagnosed Issue: computer_wont_turn_on
+Solution: Check power source, ensure power cable is connected, try different power outlet.
