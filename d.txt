@@ -1,0 +1,613 @@
+1 Data Wrangling 1
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+data = pd.read_csv("train.csv")
+
+print(data.isnull().sum())
+
+print(data.describe())
+
+print(data.dtypes)
+
+print(data.shape)
+
+print(data.dtypes)
+
+data['Age'].fillna(data['Age'].median(), inplace=True)
+print(data['Age'])
+
+data['Age'] = data['Age'].astype(int)
+print(data['Age'])
+
+print(data['HomePlanet'])
+
+data['HomePlanet'] = pd.Categorical(data['HomePlanet'])
+data['HomePlanet'] = data['HomePlanet'].cat.codes
+
+print(data['HomePlanet'])
+
+2 Data Wrangling 2
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+data = pd.read_csv('data.csv')
+
+print(data.head())
+
+print(data.isnull().sum())
+print(data.describe())
+
+data['CGPA1'] = data['CGPA1'].fillna(data['CGPA1'].mean())
+data['CGPA2'] = data['CGPA2'].fillna(data['CGPA2'].mean())
+
+sns.boxplot(data['age'])
+plt.show()
+
+Q1 = data['age'].quantile(0.25)
+Q3 = data['age'].quantile(0.75)
+
+IQR = Q3 - Q1
+
+print("Q1: ", Q1)
+print("Q3: ", Q3)
+print("IQR: ", IQR)
+
+outliers = data[(data['age'] < (Q1 - 1.5 * IQR)) | (data['age'] > (Q3 + 1.5 * IQR))]
+print(outliers)
+
+data['age'] = data['age'].mask(data['age'] > Q3 + 1.5 * IQR, data['age'].mode()[0])
+data['age'] = data['age'].mask(data['age'] < Q1 - 1.5 * IQR, data['age'].mode()[0])
+
+print(data['age'])
+
+data['age'] = data['age'].apply(lambda x: np.log(x) if x > 0 else 0)
+
+print(data['age'])
+
+sns.boxplot(data['age'])
+plt.show()
+
+3 Data Wrangling 3
+
+import pandas as pd
+import numpy as np
+import seaborn as sbn
+import matplotlib.pyplot as plt
+
+pd.set_option('display.max_rows', 102)
+
+df=pd.read_csv("/StudentsPerformance.csv")
+
+df.head()
+
+df.isnull().sum()
+
+df.dtypes
+
+columns_list=df.columns
+for i in columns_list:
+    print(i)
+    print(df[i].unique())
+     
+maleDataFrame = df[df['gender'] == 'male']['math score']
+femaleDataFrame = df[df['gender'] == 'female']['math score']
+
+maleDataFrame.describe()
+     
+femaleDataFrame.describe()
+
+df=sbn.load_dataset("iris")
+
+df.head()     
+
+df.shape     
+
+df.isnull().sum()
+
+df.dtypes
+
+columns_list=df.columns
+print(columns_list)
+
+for i in columns_list:
+    print(df[i].unique())
+     
+setosaDataFrame = df[df['species'] == 'setosa']
+versicolorDataFrame = df[df['species'] == 'versicolor']
+virginicaDataFrame = df[df['species'] == 'virginica']
+
+setosaDataFrame.describe()
+
+versicolorDataFrame.describe()
+
+virginicaDataFrame.describe()     
+
+sbn.boxplot(df['species'])
+plt.show()
+     
+4 Data Analytics 1
+
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+df = pd.read_csv("BostonHousing.csv")
+
+df.head()
+
+x=df.drop('medv',axis=1)
+y=df['medv']
+
+from sklearn.model_selection import train_test_split
+
+x_test,x_train,y_test,y_train=train_test_split(x,y,test_size=0.2,random_state=42)
+
+from sklearn.impute import SimpleImputer
+
+imputer = SimpleImputer(strategy="mean")
+x_train_i=imputer.fit_transform(x_train)
+x_test_i=imputer.transform(x_test)
+
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+x_train_s=scaler.fit_transform(x_train_i)
+x_test_s=scaler.transform(x_test_i)
+
+from sklearn.linear_model import LinearRegression
+
+model=LinearRegression()
+model.fit(x_train_s,y_train)
+
+y_pred=model.predict(x_test_s)
+print(y_pred)
+
+from sklearn.metrics import mean_squared_error
+
+rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+print("Root Mead squared Error is:")
+print(rmse)
+
+model.score(x_train_s,y_train)
+
+model.score(x_test_s,y_test)
+
+plt.figure(figsize=(10, 6))
+plt.scatter(y_test, y_pred)
+plt.xlabel("Actual Prices")
+plt.ylabel("Predicted Prices")
+plt.title("Actual Prices vs Predicted Prices")
+plt.show()
+
+5 Data Analytics 2
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+     
+
+df= pd.read_csv('/content/Social_Network_Ads.csv')
+df.head()
+
+df.shape
+
+df.isnull().sum()
+
+df.columns
+
+x = df[['Age', 'EstimatedSalary']]
+y=df['Purchased']
+
+from sklearn.model_selection import train_test_split
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state = 42)
+
+from sklearn.linear_model import LogisticRegression
+
+model= LogisticRegression()
+model.fit(x_train, y_train)
+
+y_predict=model.predict(x_test)
+     
+print("Training accuracy:", model.score(x_train,y_train)*100)
+print("Testing accuracy:", model.score(x_test,y_test)*100)                    
+
+from sklearn.metrics import precision_score,confusion_matrix,accuracy_score,recall_score
+cm=confusion_matrix(y_test,y_predict)
+print("Confusion matrix is:\n",cm)
+
+acc= model.score(x_test,y_test)
+err_rate=1-acc
+print("Error Rate: ",err_rate)
+
+pr= precision_score(y_test,y_predict,average='micro')
+print("Precision Score: ",pr)
+
+rs = recall_score(y_test,y_predict,average='micro')
+print("Recall Score: ",rs)
+
+6 Data Analytics
+
+import pandas as pd
+import numpy as np
+import seaborn as sns
+df=sns.load_dataset("iris")
+
+df.info()
+
+df.describe()
+
+df.isnull().sum()
+
+y = df['species']
+X = df.drop(columns=['species'])
+     
+from sklearn.model_selection import train_test_split
+x_train, x_test, y_train, y_test = train_test_split(X, y, test_size =0.2,random_state = 0)
+     
+from sklearn.naive_bayes import GaussianNB
+gaussian = GaussianNB()
+     
+ypred = gaussian.predict(x_test)
+     
+from sklearn.metrics import precision_score,confusion_matrix,accuracy_score,recall_score,classification_report
+     
+cm=confusion_matrix(y_test,ypred)
+cmgaussian.fit(x_train, y_train)
+
+acc=accuracy_score(y_test,ypred)
+print("Accuracy Score: ",acc)
+     
+err_rate=1-acc
+print("Error Rate: ",err_rate)
+    
+pr= precision_score(y_test,ypred,average='micro')
+print("Precision Score: ",pr)
+
+rs = recall_score(y_test,ypred,average='micro')
+print("Recall Score: ",rs)                         
+
+cr=classification_report(y_test,ypred)
+print("Classification Report: ",cr)
+
+7 Text Analytics
+
+import nltk
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
+nltk.download('averaged_perceptron_tagger')
+
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer, WordNetLemmatizer
+from nltk import pos_tag
+
+sample_document = "Natural language processing (NLP) is a subfield of linguistics, computer science, and artificial intelligence concerned with the interactions between computers and human language."
+          
+tokens = word_tokenize(sample_document)
+print("Original Tokens:", tokens)
+
+pos_tags = pos_tag(tokens)
+print("POS Tags:", pos_tags)
+
+stop_words = set(stopwords.words('english'))
+filtered_tokens = [word for word in tokens if word.lower() not in stop_words]
+print("Filtered Tokens (Stopwords Removed):", filtered_tokens)
+
+stemmer = PorterStemmer()
+stemmed_tokens = [stemmer.stem(word) for word in filtered_tokens]
+print("Stemmed Tokens:", stemmed_tokens)
+
+lemmatizer = WordNetLemmatizer()
+lemmatized_tokens = [lemmatizer.lemmatize(word) for word in filtered_tokens]
+print("Lemmatized Tokens:", lemmatized_tokens)
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+# Combine tokens into a single string (for TF-IDF calculation)
+preprocessed_text = ' '.join(lemmatized_tokens)  # or use stemmed_tokens
+
+# Calculate TF-IDF
+tfidf_vectorizer = TfidfVectorizer()
+tfidf_matrix = tfidf_vectorizer.fit_transform([preprocessed_text])
+
+# Get feature names (words)
+feature_names = tfidf_vectorizer.get_feature_names_out()
+
+# Create a dictionary of feature names and their corresponding TF-IDF scores
+word_tfidf_scores = dict(zip(feature_names, tfidf_matrix.toarray()[0]))
+
+print("TF-IDF Scores:")
+for word, score in sorted(word_tfidf_scores.items()):
+    print(f"{word}: {score}")
+
+8 Data Visualization 1 
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+titanic = sns.load_dataset('titanic')
+
+print(titanic.shape)
+
+print(titanic.columns)
+
+sns.histplot(data=titanic, x="age", kde=True)
+
+sns.countplot(x='sex', data=titanic)
+plt.show()
+
+sns.countplot(x='class', data=titanic)
+plt.show()
+
+sns.boxplot(x='class', y='fare', data=titanic)
+plt.show()
+
+sns.boxplot(x='class', y='age', data=titanic)
+plt.show()
+
+sns.barplot(x="class", y="survived", data=titanic)
+
+sns.catplot(x='class', y='survived', hue='sex', kind='bar', data=titanic)
+plt.show()
+
+sns.barplot(x="sex",y="survived",data=titanic)
+
+sns.histplot(data=titanic, x='fare', kde=True, bins=30)
+plt.title('Distribution of Fares')
+plt.show()
+
+9 Data Visualization 2
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+titanic = sns.load_dataset('titanic')
+
+print(titanic.head())
+
+male_survivors = titanic[(titanic['sex'] == 'male') & (titanic['survived'] == 1)].shape[0]
+male_non_survivors = titanic[(titanic['sex'] == 'male') & (titanic['survived'] == 0)].shape[0]
+female_survivors = titanic[(titanic['sex'] == 'female') & (titanic['survived'] == 1)].shape[0]
+female_non_survivors = titanic[(titanic['sex'] == 'female') & (titanic['survived'] == 0)].shape[0]
+
+print(f"Male survivors: {male_survivors}")
+print(f"Male non-survivors: {male_non_survivors}")
+print(f"Female survivors: {female_survivors}")
+print(f"Female non-survivors: {female_non_survivors}")
+
+plt.figure(figsize=(10,6)) 
+sns.boxplot(x='sex', y='age', hue='survived', data=titanic)
+plt.title('Box Plot of Age Distribution by Sex and Survival')
+plt.show()
+
+10 Data Visualization 3 
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as snb
+df=snb.load_dataset('iris')
+     
+print("Features:")
+for feature in df.columns:
+    if df[feature].dtype == 'int64' or df[feature].dtype == 'float64':
+        print(f"Type of {feature}: Numeric")
+    else:
+        print(f"Type of {feature}: Nominal")
+    if df[feature].dtype == 'object':
+        print(f"  Unique values: {df[feature].unique()}")
+
+df.info()
+
+snb.histplot(df['sepal_length'])
+
+snb.histplot(df['sepal_width'])
+
+snb.histplot(df['petal_length'])
+
+snb.histplot(df['petal_width'])
+
+snb.boxplot(df['sepal_length'])
+
+snb.boxplot(df['sepal_width'])
+
+snb.boxplot(df['petal_length'])
+
+snb.boxplot(df['petal_width'])
+
+sns.pairplot(df, hue='species')
+plt.show()
+
+B1 Word Count
+
+package org.myorg;
+
+import java.io.IOException;
+import java.util.*;
+
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.conf.*;
+import org.apache.hadoop.io.*;
+import org.apache.hadoop.mapred.*;
+import org.apache.hadoop.util.*;
+
+public class WordCount {
+
+    public static class Map extends MapReduceBase implements Mapper<LongWritable, Text, Text, IntWritable> {
+        private final static IntWritable one = new IntWritable(1);
+        private Text word = new Text();
+
+        public void map(LongWritable key, Text value, OutputCollector<Text, IntWritable> output, Reporter reporter)
+                throws IOException {
+            String line = value.toString();
+            StringTokenizer tokenizer = new StringTokenizer(line);
+            while (tokenizer.hasMoreTokens()) {
+                word.set(tokenizer.nextToken());
+                output.collect(word, one);
+            }
+        }
+    }
+
+    public static class Reduce extends MapReduceBase implements Reducer<Text, IntWritable, Text, IntWritable> {
+        public void reduce(Text key, Iterator<IntWritable> values, OutputCollector<Text, IntWritable> output,
+                Reporter reporter) throws IOException {
+            int sum = 0;
+            while (values.hasNext()) {
+                sum += values.next().get();
+            }
+            output.collect(key, new IntWritable(sum));
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        JobConf conf = new JobConf(WordCount.class);
+        conf.setJobName("wordcount");
+        conf.setOutputKeyClass(Text.class);
+        conf.setOutputValueClass(IntWritable.class);
+
+        conf.setMapperClass(Map.class);
+        conf.setCombinerClass(Reduce.class);
+        conf.setReducerClass(Reduce.class);
+
+        conf.setInputFormat(TextInputFormat.class);
+        conf.setOutputFormat(TextOutputFormat.class);
+
+        FileInputFormat.setInputPaths(conf, new Path(args[0]));
+        FileOutputFormat.setOutputPath(conf, new Path(args[1]));
+
+        JobClient.runJob(conf);
+    }
+}
+
+Output B1 :
+
+sudo service ssh restart
+start-all.sh
+
+mkdir practical_b1
+cd practical_b1/
+
+cat > \\wsl.localhost\Ubuntu-20.04\home\prathamesh\practical_b1\testdata.txtWordCount.java
+
+mkdir wordcount_classes
+
+javac -cp $(hadoop classpath) -d wordcount_classes/ WordCount.java
+jar -cvf wordcount.jar -C wordcount_classes/ .
+hdfs dfs -mkdir -p /map/wordcount/input  /map/wordcount/output
+
+cat > testdata.txt
+
+hadoop fs -mkdir -p /map/wordcount/input
+
+hadoop fs -put testdata.txt  /map/wordcount/input/
+
+hadoop jar wordcount.jar  org.myorg.WordCount /map/wordcount/input/testdata.txt /map/wordcount//output/map_output
+
+hdfs dfs -ls /map/wordcount//output/map_output
+
+B2 MapReduce Log file
+
+import java.io.IOException;
+import java.util.*;
+
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.conf.*;
+import org.apache.hadoop.io.*;
+import org.apache.hadoop.mapred.*;
+import org.apache.hadoop.util.*;
+
+public class LogCount {
+    public static class Map extends MapReduceBase implements Mapper<LongWritable, Text, Text, IntWritable> {
+        private final static IntWritable one = new IntWritable(1);
+
+        public void map(LongWritable key, Text value, OutputCollector<Text, IntWritable> output, Reporter reporter)
+                throws IOException {
+            String valueString = value.toString();
+            String[] SingleCountryData = valueString.split("-");
+            output.collect(new Text(SingleCountryData[0]), one);
+        }
+    }
+
+    public static class Reduce extends MapReduceBase implements Reducer<Text, IntWritable, Text, IntWritable> {
+
+        public void reduce(Text t_key, Iterator<IntWritable> values, OutputCollector<Text, IntWritable> output,
+                Reporter reporter) throws IOException {
+            Text key = t_key;
+            int frequencyForCountry = 0;
+            while (values.hasNext()) {
+                // replace type of value with the actual type of our value
+                IntWritable value = (IntWritable) values.next();
+                frequencyForCountry += value.get();
+
+            }
+            output.collect(key, new IntWritable(frequencyForCountry));
+        }
+    }
+
+    public static void main(String[] args) {
+        JobClient my_client = new JobClient();
+        // Create a configuration object for the job
+        JobConf job_conf = new JobConf(LogCount.class);
+
+        // Set a name of the Job
+        job_conf.setJobName("SalePerCountry");
+
+        // Specify data type of output key and value
+        job_conf.setOutputKeyClass(Text.class);
+        job_conf.setOutputValueClass(IntWritable.class);
+
+        // Specify names of Mapper and Reducer Class
+        job_conf.setMapperClass(LogCount.Map.class);
+        job_conf.setReducerClass(LogCount.Reduce.class);
+
+        // Specify formats of the data type of Input and output
+        job_conf.setInputFormat(TextInputFormat.class);
+        job_conf.setOutputFormat(TextOutputFormat.class);
+
+        // Set input and output directories using command line arguments,
+        // arg[0] = name of input directory on HDFS, and arg[1] = name of output
+        // directory to be created to store the output file.
+
+        FileInputFormat.setInputPaths(job_conf, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job_conf, new Path(args[1]));
+
+        my_client.setConf(job_conf);
+        try {
+            // Run the job
+            JobClient.runJob(job_conf);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+Output B2 :
+
+1. Create a folder for practical and put LogCount.java and log_data.txt files in it
+2. To create jar file run following commands in terminal (Open in same folder created above)
+	mkdir classes
+	javac -cp $(hadoop classpath) -d classes/ LogCount.java
+	jar -cvf logcount.jar -C classes/ .
+3. create input and output folder in hadoop file system(can create manually in web UI and upload log_data.txt file in input folder)
+	hadoop fs -mkdir -p /logcount/input /logcount/output
+	hadoop fs -put log_data.txt /logcount/input/
+4. To run the program 
+	hadoop jar logcount.jar LogCount /logcount/input/log_data.txt /logcount/output/op
+5. To see output (In web UI navigate to output/op/ folder and download part-00000 file output is there) copy op folder to local and display it
+	hadoop fs -get /logcount/output/op .
+	cat op/part-00000
+
+
+
+
+
+
+
